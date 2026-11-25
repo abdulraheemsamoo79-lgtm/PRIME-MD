@@ -1,0 +1,20 @@
+{
+  "name": "PRIME MD",
+  "description": "PRIME MD - powerful multi-session WhatsApp mini bot (fresh base, Phase 1)",
+  "repository": "",
+  "logo": "",
+  "keywords": ["whatsapp", "bot", "baileys", "multi-session"],
+  "env": {
+    "MONGO_URI": { "description": "MongoDB connection string for sessions and settings. Leave unset/placeholder to run on local file auth.", "required": false },
+    "MONGO_DB": { "description": "MongoDB database name.", "value": "prime_md", "required": false },
+    "SERVER_ID": { "description": "Numeric ID of this server instance. Each instance restores only its own sessions.", "value": "1", "required": false },
+    "SERVER_NAME": { "description": "Display name of this server.", "value": "SERVER 01", "required": false },
+    "SESSION_LIMIT": { "description": "Maximum number of paired sessions on this server.", "value": "50", "required": false },
+    "PAIR_CODE": { "description": "Custom 8-character pairing code word tried first (random code is the silent fallback).", "value": "PRIMEMD", "required": false },
+    "OWNER_NUMBER": { "description": "Global owner WhatsApp number (digits, with country code). Always allowed, even in private mode.", "value": "923138702477", "required": false },
+    "BOT_NAME": { "description": "Bot display name.", "value": "PRIME MD", "required": false },
+    "PREFIX": { "description": "Command prefix.", "value": ".", "required": false }
+  },
+  "formation": { "web": { "quantity": 1, "size": "basic" } },
+  "buildpacks": [{ "url": "heroku/nodejs" }]
+}
