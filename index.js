@@ -13,6 +13,7 @@ const settings = require('./lib/settings');
 const { normalizeNumber } = require('./lib/normalizeNumber');
 const vvcache = require('./lib/vvcache');
 const banlist = require('./lib/banlist');
+const antiSpam = require('./lib/antiSpam');
 const aiCore = require('./lib/aiCore');
 const msgstore = require('./lib/msgstore');
 const automation = require('./lib/automation');
@@ -121,6 +122,17 @@ async function handleMessage(sessionNumber, sock, msg) {
     // (and can never be on the list - the ban store refuses to add him).
     if (!isOwner) {
       try { await banlist.ensureLoaded(); if (banlist.shouldIgnore(senderNumber, isOwner)) return; } catch {}
+    }
+
+    // Cross-session anti-spam: a sliding window over this sender's
+    // command attempts on ALL sessions combined (see lib/antiSpam).
+    // Over the limit the command is silently dropped, with at most one
+    // slow-down notice per sender per 5 minutes. The owner is exempt
+    // (enforced inside the limiter as well).
+    const spam = antiSpam.check(senderJid);
+    if (!spam.allowed) {
+      if (spam.notify) { try { await sock.sendMessage(jid, { text: '⏳ Please slow down — too many commands at once.' }, { quoted: msg }); } catch {} }
+      return;
     }
 
     const body = text.slice(config.PREFIX.length).trim();
@@ -295,6 +307,27 @@ require('./lib/admin').registerAdmin(app, { sessions, settings });
 
 process.on('uncaughtException', (e) => console.error('[uncaughtException]', e.message));
 process.on('unhandledRejection', (e) => console.error('[unhandledRejection]', e?.message || e));
+
+// ---------- memory guard ----------
+// Railway gives this process a hard RAM ceiling; a slow leak would
+// otherwise end in an unlogged OOM kill mid-traffic. If RSS stays over
+// the configured limit for 3 straight checks, exit cleanly and let
+// Railway restart the process - sessions restore from MongoDB.
+if (config.MEMORY_LIMIT_MB > 0) {
+  let overStreak = 0;
+  const memGuard = setInterval(() => {
+    const rssMb = Math.round(process.memoryUsage().rss / 1024 / 1024);
+    if (rssMb > config.MEMORY_LIMIT_MB) {
+      overStreak += 1;
+      console.log(`[memory] RSS ${rssMb}MB over limit ${config.MEMORY_LIMIT_MB}MB (check ${overStreak}/3)`);
+      if (overStreak >= 3) {
+        console.error(`[memory] RSS ${rssMb}MB over limit ${config.MEMORY_LIMIT_MB}MB on 3 checks — restarting for a clean process; sessions restore from MongoDB`);
+        process.exit(0);
+      }
+    } else overStreak = 0;
+  }, 60000);
+  if (memGuard.unref) memGuard.unref();
+}
 
 app.listen(config.PORT, () => {
   console.log(`${config.BOT_NAME} web server listening on port ${config.PORT} (${config.SERVER_NAME}, limit ${config.SESSION_LIMIT})`);

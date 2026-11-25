@@ -41,4 +41,8 @@ module.exports = {
   // There is NO built-in default password - set ADMIN_PASS to enable it.
   ADMIN_PASS: process.env.ADMIN_PASS || '',
   BROADCAST_DELAY_MS: parseInt(process.env.BROADCAST_DELAY_MS || '1500', 10), // pause between broadcast sends
+  // Memory guard: if RSS stays above this for 3 straight minutes the
+  // process exits cleanly and Railway restarts it (sessions restore
+  // from MongoDB). 0 disables the guard.
+  MEMORY_LIMIT_MB: parseInt(process.env.MEMORY_LIMIT_MB || '850', 10),
 };
