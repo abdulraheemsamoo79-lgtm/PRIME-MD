@@ -192,48 +192,80 @@ app.get('/logo.png', (req, res) => {
 app.get('/', (req, res) => {
   res.type('html').send(`<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${config.BOT_NAME} - Pairing</title>
+<title>${config.BOT_NAME} - Pair Your Number</title>
 <style>
- body{font-family:system-ui,Arial,sans-serif;background:#12001f;color:#f3eaff;margin:0;padding:24px;text-align:center}
- .card{max-width:430px;margin:0 auto;background:#1e0733;border:2px solid #8b2fc9;border-radius:18px;padding:24px;box-shadow:0 0 32px #8b2fc966}
- img{width:150px;height:150px;object-fit:cover;border-radius:16px;border:2px solid #b45cff}
- h1{color:#d9a5ff;margin:10px 0 2px} .tag{color:#bfa8e0;margin:0 0 14px}
- input{width:100%;box-sizing:border-box;padding:13px;border-radius:10px;border:1px solid #8b2fc9;background:#12001f;color:#fff;font-size:17px;text-align:center}
- button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:10px;background:#8b2fc9;color:#fff;font-size:17px;font-weight:700;cursor:pointer}
- button:disabled{background:#5b3a7a}
- #code{font-size:36px;letter-spacing:3px;font-weight:800;color:#ffd94d;margin:16px 0 4px;display:none}
- #msg{color:#e8d9ff;min-height:22px}
- ol{text-align:left;color:#d9c8f5;line-height:1.55}
- .live{color:#9fe8a9;font-size:14px}
+ *{box-sizing:border-box}
+ body{font-family:system-ui,Arial,sans-serif;margin:0;min-height:100vh;color:#f5efff;text-align:center;padding:26px 14px 40px;background:radial-gradient(900px 500px at 50% -10%,#4b1185 0%,#1b0233 55%,#0d0119 100%)}
+ .card{max-width:440px;margin:0 auto;background:linear-gradient(180deg,#26064a,#180230);border:1px solid #9d4dff;border-radius:22px;padding:26px 22px 20px;box-shadow:0 0 44px #8b2fc955,inset 0 0 24px #8b2fc922}
+ .logo{width:158px;height:158px;object-fit:cover;border-radius:20px;border:2px solid #c07dff;box-shadow:0 0 26px #a64dff88}
+ h1{color:#e3b8ff;margin:12px 0 2px;font-size:32px;letter-spacing:1px;text-shadow:0 0 18px #a64dff}
+ .tag{color:#cdb2ef;margin:0 0 12px;font-size:14px}
+ .pill{display:inline-block;background:#2e0a52;border:1px solid #8b2fc9;color:#a9f0b2;border-radius:999px;padding:6px 14px;font-size:13.5px;margin-bottom:16px}
+ .pill b{color:#fff}
+ label{display:block;text-align:left;color:#d9c2f7;font-size:13.5px;margin:2px 0 6px}
+ input{width:100%;padding:14px;border-radius:12px;border:1px solid #8b2fc9;background:#12001f;color:#fff;font-size:17.5px;text-align:center;letter-spacing:.5px}
+ input:focus{outline:2px solid #c07dff}
+ button{width:100%;margin-top:12px;padding:14px;border:0;border-radius:12px;background:linear-gradient(90deg,#8b2fc9,#b45cff);color:#fff;font-size:17.5px;font-weight:800;cursor:pointer;box-shadow:0 4px 18px #8b2fc966}
+ button:disabled{opacity:.55;cursor:wait}
+ .spin{display:none;margin:18px auto 4px;width:34px;height:34px;border-radius:50%;border:4px solid #4b237a;border-top-color:#ffd94d;animation:sp 0.8s linear infinite}
+ @keyframes sp{to{transform:rotate(360deg)}}
+ #wait{color:#ffd94d;min-height:20px;font-size:14.5px;margin-top:8px}
+ #codebox{display:none;margin:18px 0 4px;background:#12001f;border:2px dashed #ffd94d;border-radius:14px;padding:14px 8px}
+ #code{font-size:40px;letter-spacing:4px;font-weight:900;color:#ffd94d}
+ #copy{width:auto;margin-top:10px;padding:9px 22px;font-size:15px;background:#2e0a52;border:1px solid #ffd94d;color:#ffd94d;box-shadow:none}
+ #msg{color:#efe4ff;min-height:22px;font-size:15px;margin-top:10px}
+ #msg.err{color:#ff9d9d}
+ .steps{text-align:left;margin:18px 0 4px;padding:0;list-style:none}
+ .steps li{display:flex;gap:11px;margin-bottom:12px;color:#ddc9f8;line-height:1.5;font-size:14.8px}
+ .n{flex:0 0 26px;height:26px;border-radius:50%;background:#8b2fc9;color:#fff;font-weight:800;text-align:center;line-height:26px;font-size:14px;box-shadow:0 0 10px #8b2fc988}
+ .feat{color:#a98fd0;font-size:13px;margin-top:16px;line-height:1.7}
+ .foot{color:#8f74b8;font-size:12.5px;margin-top:8px}
 </style></head><body>
 <div class="card">
- <img src="/logo.png" alt="${config.BOT_NAME}">
+ <img class="logo" src="/logo.png" alt="${config.BOT_NAME}">
  <h1>👑 ${config.BOT_NAME} 👑</h1>
  <p class="tag">⚡ Fast • Secure • Stable • Premium ⚡</p>
- <p class="live" id="live">Loading server status...</p>
- <input id="number" inputmode="tel" placeholder="Your WhatsApp number, e.g. 923138702477">
- <button id="btn" onclick="getCode()">Get Code</button>
- <div id="code"></div>
+ <div><span class="pill" id="live">● Loading server status...</span></div>
+ <label for="number">Your WhatsApp number (with country code)</label>
+ <input id="number" inputmode="tel" autocomplete="tel" placeholder="e.g. 923001234567">
+ <button id="btn" onclick="getCode()">Get Pairing Code</button>
+ <div class="spin" id="spin"></div>
+ <p id="wait"></p>
+ <div id="codebox"><div id="code"></div><button id="copy" onclick="copyCode()">Copy Code</button></div>
  <p id="msg"></p>
- <ol>
-  <li>Enter your WhatsApp number above and tap <b>Get Code</b>.</li>
-  <li>On that phone open <b>WhatsApp &gt; Settings &gt; Linked devices &gt; Link a device</b>.</li>
-  <li>Tap <b>Link with phone number instead</b> and enter the code.</li>
- </ol>
+ <ul class="steps">
+  <li><span class="n">1</span><span>Enter your WhatsApp number above and tap <b>Get Pairing Code</b>. The code can take up to 40 seconds - please wait, do not tap again.</span></li>
+  <li><span class="n">2</span><span>On that phone open <b>WhatsApp &gt; Settings &gt; Linked devices &gt; Link a device</b>.</span></li>
+  <li><span class="n">3</span><span>Tap <b>Link with phone number instead</b> and enter the code. A welcome message will arrive in your chat when you are connected.</span></li>
+ </ul>
+ <p class="feat">169 commands • Downloads • AI Chat • View-Once Saver<br>HD Status • Group Tools • Islamic • Fun &amp; Economy</p>
+ <p class="foot">© POWERED BY ${config.BOT_NAME} • BY AR SAMOON</p>
 </div>
 <script>
-async function loadStatus(){ try{ const s=await (await fetch('/api/status')).json(); document.getElementById('live').textContent = s.serverName + ' - ' + s.sessions + '/' + s.limit + ' users connected'; }catch(e){} }
-loadStatus();
+var waitTimer=null;
+async function loadStatus(){ try{ var s=await (await fetch('/api/status')).json(); document.getElementById('live').innerHTML='● <b>'+s.serverName+'</b> &nbsp;•&nbsp; '+s.sessions+'/'+s.limit+' users connected'; }catch(e){} }
+loadStatus(); setInterval(loadStatus,15000);
+function copyCode(){
+  var t=document.getElementById('code').textContent;
+  if(navigator.clipboard){ navigator.clipboard.writeText(t); }
+  document.getElementById('copy').textContent='Copied ✓';
+  setTimeout(function(){ document.getElementById('copy').textContent='Copy Code'; },1600);
+}
 async function getCode(){
-  const btn=document.getElementById('btn'), codeEl=document.getElementById('code'), msg=document.getElementById('msg');
-  const number=document.getElementById('number').value.trim();
-  codeEl.style.display='none'; msg.textContent='Getting your code, please wait...'; btn.disabled=true;
+  var btn=document.getElementById('btn'), box=document.getElementById('codebox'), codeEl=document.getElementById('code'), msg=document.getElementById('msg'), wait=document.getElementById('wait'), spin=document.getElementById('spin');
+  var number=document.getElementById('number').value.trim();
+  box.style.display='none'; msg.textContent=''; msg.className='';
+  if(!number){ msg.textContent='Please enter your WhatsApp number first.'; msg.className='err'; return; }
+  btn.disabled=true; spin.style.display='block';
+  var steps=['Connecting to WhatsApp...','Asking WhatsApp for your code...','Still working - pairing can take up to 40 seconds...','Almost there, please keep waiting...'];
+  var i=0; wait.textContent=steps[0];
+  waitTimer=setInterval(function(){ i=Math.min(i+1,steps.length-1); wait.textContent=steps[i]; },7000);
   try{
-    const r=await (await fetch('/api/code?number='+encodeURIComponent(number))).json();
-    if(r.ok && r.code){ codeEl.textContent=r.code; codeEl.style.display='block'; }
-    msg.textContent=r.message||'Done.';
-  }catch(e){ msg.textContent='Something went wrong. Please try again.'; }
-  btn.disabled=false; loadStatus();
+    var r=await (await fetch('/api/code?number='+encodeURIComponent(number))).json();
+    if(r.ok && r.code){ codeEl.textContent=r.code; box.style.display='block'; msg.textContent='Your code is ready - enter it in WhatsApp now, it expires in a few minutes.'; }
+    else { msg.textContent=r.message||'Something went wrong. Please try again.'; if(!r.ok) msg.className='err'; }
+  }catch(e){ msg.textContent='Network problem. Please check your connection and try again.'; msg.className='err'; }
+  clearInterval(waitTimer); wait.textContent=''; spin.style.display='none'; btn.disabled=false; loadStatus();
 }
 </script></body></html>`);
 });
