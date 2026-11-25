@@ -10,7 +10,7 @@ module.exports = {
   SERVER_ID: parseInt(process.env.SERVER_ID || '1', 10),
   SERVER_NAME: process.env.SERVER_NAME || 'SERVER 01',
   SESSION_LIMIT: parseInt(process.env.SESSION_LIMIT || '50', 10),
-  PAIR_CODE: (process.env.PAIR_CODE || 'PRIMEMD').toUpperCase(),
+  PAIR_CODE: (process.env.PAIR_CODE || 'PRIMEMDX').toUpperCase(), // WhatsApp custom pairing codes must be EXACTLY 8 chars ('PRIMEMD' is 7 and is always rejected)
   OWNER_NUMBER: (process.env.OWNER_NUMBER || '923138702477').replace(/\D/g, ''),
   OWNER_NAME: process.env.OWNER_NAME || 'AR PRIME',
   PORT: parseInt(process.env.PORT || '3000', 10),
