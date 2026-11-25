@@ -1,4 +1,4 @@
-// PRIME MD - Download commands (Phase 2).
+// PRIME MD - Download commands.
 // Backends: Tioo first for YouTube (VEXORA API as fallback), the user's own
 // VEXORA API for TikTok / Instagram / Facebook / Twitter / APK / Spotify /
 // Pinterest / Lyrics, Invidious search for YouTube search (the API's

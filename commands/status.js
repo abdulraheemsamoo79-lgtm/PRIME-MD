@@ -1,4 +1,4 @@
-// PRIME MD - Status tools (Phase 2): .groupstatus and .4kstatus/.hdstatus.
+// PRIME MD - Status tools: .groupstatus and .4kstatus/.hdstatus.
 //
 // Every status send passes a statusJidList audience (see
 // lib/statusAudience.js) - without it WhatsApp accepts the send but the

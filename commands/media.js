@@ -1,4 +1,4 @@
-// PRIME MD - Media, sticker & audio tools (Phase 3). Everything runs
+// PRIME MD - Media, sticker & audio tools. Everything runs
 // locally with sharp + the bundled ffmpeg; the only network features are
 // .emojimix (Google's emoji-kitchen CDN) and .tourl (catbox, with a
 // litterbox fallback - uploads could not be verified from the build

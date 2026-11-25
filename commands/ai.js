@@ -1,4 +1,4 @@
-// PRIME MD - AI commands (Phase 2). All of them run on lib/aiCore: the
+// PRIME MD - AI commands. All of them run on lib/aiCore: the
 // user's own VEXORA API first, a guarded keyless fallback second.
 const config = require('../config');
 const { askAi } = require('../lib/aiCore');
@@ -8,7 +8,7 @@ const FAIL = '⚠️ Sorry, the AI is busy right now. Please try again in a mome
 function aiCommand(name, aliases, label, styleHint) {
   return {
     name, aliases, category: 'AI',
-    description: `Chat with the ${label} AI assistant.`,
+    description: `Chat with the ${label} assistant.`,
     use: `.${name} <your question>`,
     run: async (ctx) => {
       if (!ctx.argText) { await ctx.reply(`🤖 Please ask something, for example *.${name} What is the capital of Pakistan?*`); return; }

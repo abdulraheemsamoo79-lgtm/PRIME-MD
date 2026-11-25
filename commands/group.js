@@ -1,4 +1,4 @@
-// PRIME MD - Group management & protection (Phase 3). All per-group
+// PRIME MD - Group management & protection. All per-group
 // settings live in the settings layer (restart-safe). Admin/owner gates:
 // group admin commands require the sender to be a group admin, the global
 // owner, or the session owner; ownerOnly commands are marked as such.

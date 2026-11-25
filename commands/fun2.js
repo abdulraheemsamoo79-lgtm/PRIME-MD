@@ -1,4 +1,4 @@
-// PRIME MD - Fun & Economy (Phase 3). XP and coins live in the settings
+// PRIME MD - Fun & Economy. XP and coins live in the settings
 // layer under the session's `eco` map (keyed by user number), so levels
 // and balances survive restarts. Quiz questions come from OpenTDB
 // (verified live); memes from meme-api.com (verified live) with a built-in

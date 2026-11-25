@@ -1,4 +1,4 @@
-// PRIME MD - Phase 1 entry point.
+// PRIME MD - entry point.
 // Express: status page with a working pairing form, /api/status,
 // /api/sessions, /api/code. WhatsApp: multi-session message handler with
 // prefix commands, public/private modes, per-user rate limiting, and a
@@ -12,6 +12,7 @@ const sessions = require('./lib/sessionManager');
 const settings = require('./lib/settings');
 const { normalizeNumber } = require('./lib/normalizeNumber');
 const vvcache = require('./lib/vvcache');
+const banlist = require('./lib/banlist');
 const aiCore = require('./lib/aiCore');
 const msgstore = require('./lib/msgstore');
 const automation = require('./lib/automation');
@@ -43,7 +44,7 @@ function extractContext(msg) {
   };
 }
 
-// Non-command traffic (Phase 2): a bare number can be a pending .moviedl
+// Non-command traffic: a bare number can be a pending .moviedl
 // pick, and users with AI Mode on get AI answers to normal messages.
 const aimodeLastAt = new Map();
 async function handleNonCommand(sessionNumber, sock, msg, jid, text) {
@@ -61,6 +62,12 @@ async function handleNonCommand(sessionNumber, sock, msg, jid, text) {
     mode: await settings.getMode(sessionNumber), bootedAt: BOOTED_AT, logoPath: LOGO_PATH,
     reply: (t) => sock.sendMessage(jid, { text: String(t) }, { quoted: msg }),
   };
+  if (/^[12]$/.test(text.trim())) {
+    try {
+      const d2 = require('./commands/download2');
+      if (typeof d2.handleDramaPick === 'function' && await d2.handleDramaPick(ctx)) return;
+    } catch (e) { console.error('[drama pick] error:', e.message); }
+  }
   if (/^\d{1,2}$/.test(text.trim())) {
     try {
       const dl = require('./commands/download');
@@ -68,7 +75,7 @@ async function handleNonCommand(sessionNumber, sock, msg, jid, text) {
     } catch (e) { console.error('[moviedl pick] error:', e.message); }
   }
   if (fromMe || !text.trim()) return;
-  // Phase 3 (additive): a message may be the answer to a pending quiz, and
+  // a message may be the answer to a pending quiz, and
   // ordinary chat earns XP (cooldown-limited inside the economy helper).
   try { if (await fun2.tryQuizAnswer(ctx)) return; } catch (e) { console.error('[quiz answer] error:', e.message); }
   fun2.awardMessageXp(settings, sessionNumber, senderNumber).catch(() => {});
@@ -89,7 +96,7 @@ async function handleMessage(sessionNumber, sock, msg) {
     if (!msg.message) return;
     const jid = msg.key.remoteJid;
     if (!jid) return;
-    // Phase 3 (additive): store every message for antidelete/antiedit and
+    // store every message for antidelete/antiedit and
     // run the automation hooks (status tools, group moderation, AFK,
     // auto-replies, mention alerts...). This also covers status@broadcast,
     // which the command flow below intentionally skips.
@@ -109,6 +116,12 @@ async function handleMessage(sessionNumber, sock, msg) {
     const senderNumber = senderJid.split('@')[0].split(':')[0];
     const isOwner = senderNumber === config.OWNER_NUMBER;
     const isSessionOwner = senderNumber === sessionNumber;
+
+    // Banned numbers are ignored entirely. The global owner is exempt
+    // (and can never be on the list - the ban store refuses to add him).
+    if (!isOwner) {
+      try { await banlist.ensureLoaded(); if (banlist.shouldIgnore(senderNumber, isOwner)) return; } catch {}
+    }
 
     const body = text.slice(config.PREFIX.length).trim();
     if (!body) return;
@@ -244,6 +257,9 @@ app.get('/api/code', async (req, res) => {
   const result = await sessions.requestCode(norm.number, req.ip);
   res.json(result);
 });
+
+// Password-protected admin panel (disabled unless ADMIN_PASS is set).
+require('./lib/admin').registerAdmin(app, { sessions, settings });
 
 process.on('uncaughtException', (e) => console.error('[uncaughtException]', e.message));
 process.on('unhandledRejection', (e) => console.error('[unhandledRejection]', e?.message || e));

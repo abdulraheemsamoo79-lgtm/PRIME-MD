@@ -1,4 +1,4 @@
-// PRIME MD - Utility 2 (Phase 3). Every external source here was verified
+// PRIME MD - Utility 2. Every external source here was verified
 // live during the build (see BUILD-PHASE3.md): VEXORA API weather (+ wttr.in
 // fallback), BBC/Dawn RSS, CoinGecko, DictionaryAPI, Wikipedia, is.gd,
 // MyMemory, thum.io, open.er-api, World Bank (REST Countries is

@@ -22,7 +22,7 @@ module.exports = {
   PAIRING_TIMEOUT_MS: 3 * 60 * 1000, // half-created pairing sessions live max 3 minutes
   PAIRING_COOLDOWN_MS: 30 * 1000,    // 1 code request per 30s per number / IP
   PAIRING_HOURLY_LIMIT: 5,           // max 5 codes per hour per number
-  // ---- Phase 2 (power features) - all env-overridable, safe defaults ----
+  // ---- Downloads, AI & media - all env-overridable, safe defaults ----
   VEXORA_API_BASE: (process.env.VEXORA_API_BASE || 'https://vexora-api-orcin.vercel.app').replace(/\/$/, ''),
   // YouTube backend order: Tioo backend2 first (backend1 may 402; backend3
   // returns no media and is never used), then the VEXORA API as fallback.
@@ -36,4 +36,9 @@ module.exports = {
   VV_MAX_BYTES: 25 * 1024 * 1024,    // do not cache view-once items larger than this
   STATUS_PHOTO_MAX: 25 * 1024 * 1024,
   STATUS_VIDEO_MAX: 200 * 1024 * 1024,
+  // ---- Server control ----
+  // Admin panel password. Empty (the default) = the panel is disabled.
+  // There is NO built-in default password - set ADMIN_PASS to enable it.
+  ADMIN_PASS: process.env.ADMIN_PASS || '',
+  BROADCAST_DELAY_MS: parseInt(process.env.BROADCAST_DELAY_MS || '1500', 10), // pause between broadcast sends
 };

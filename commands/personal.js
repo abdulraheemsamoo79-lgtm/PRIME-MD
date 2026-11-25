@@ -1,4 +1,4 @@
-// PRIME MD - Personal automation (Phase 3). Every toggle is stored in the
+// PRIME MD - Personal automation. Every toggle is stored in the
 // per-session settings layer, so it survives restarts; the behaviours
 // themselves are executed by lib/automation.js hooks. Each toggle command
 // replies with its new ON/OFF state.

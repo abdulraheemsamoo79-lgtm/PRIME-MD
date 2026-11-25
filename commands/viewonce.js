@@ -1,4 +1,4 @@
-// PRIME MD - View-once saving (Phase 2): .vv and .vv2, plus the bare "vv"
+// PRIME MD - View-once saving: .vv and .vv2, plus the bare "vv"
 // reply trigger (wired in index.js by treating a bare "vv" as .vv).
 //
 // EXACT-ONLY RULE (hard): media is only ever taken from THIS chat - either

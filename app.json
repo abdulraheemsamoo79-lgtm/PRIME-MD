@@ -1,6 +1,6 @@
 {
   "name": "PRIME MD",
-  "description": "PRIME MD - powerful multi-session WhatsApp mini bot (fresh base, Phase 1)",
+  "description": "PRIME MD - powerful multi-session WhatsApp mini bot by AR Samoon",
   "repository": "",
   "logo": "",
   "keywords": ["whatsapp", "bot", "baileys", "multi-session"],
@@ -13,7 +13,8 @@
     "PAIR_CODE": { "description": "Custom 8-character pairing code word tried first (random code is the silent fallback).", "value": "PRIMEMD", "required": false },
     "OWNER_NUMBER": { "description": "Global owner WhatsApp number (digits, with country code). Always allowed, even in private mode.", "value": "923138702477", "required": false },
     "BOT_NAME": { "description": "Bot display name.", "value": "PRIME MD", "required": false },
-    "PREFIX": { "description": "Command prefix.", "value": ".", "required": false }
+    "PREFIX": { "description": "Command prefix.", "value": ".", "required": false },
+    "ADMIN_PASS": { "description": "Password for the /admin web panel. Leave unset to keep the panel disabled - there is no default password.", "required": false }
   },
   "formation": { "web": { "quantity": 1, "size": "basic" } },
   "buildpacks": [{ "url": "heroku/nodejs" }]

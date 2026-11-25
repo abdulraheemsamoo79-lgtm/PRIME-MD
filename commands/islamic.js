@@ -1,4 +1,4 @@
-// PRIME MD - Islamic commands (Phase 3). Keyless sources, each verified
+// PRIME MD - Islamic commands. Keyless sources, each verified
 // live during the build: AlQuran Cloud (ayah/surah) and Aladhan
 // (prayer times + qibla). Hadith APIs did not answer live, so .hadith
 // serves a small built-in collection of well-known hadith with their
